@@ -69,8 +69,8 @@ MonoBehaviour:
     y: 0
     width: 740.8888
     height: 813.7778
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 276, y: 76}
+  m_MaxSize: {x: 4001, y: 4026}
   m_ActualView: {fileID: 15}
   m_Panes:
   - {fileID: 15}
@@ -391,7 +391,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 629.7778
+    y: 575.55554
     width: 1551.4445
     height: 236.22223
   m_SerializedDataModeController:
@@ -436,7 +436,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 79}
     m_SelectedIDs: aef60000
     m_LastClickedID: 63150
-    m_ExpandedIDs: 0000000000ca9a3bffffff7f
+    m_ExpandedIDs: 00000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -465,7 +465,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 
+    m_ExpandedIDs: 00000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -544,8 +544,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Inspector\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1552.4445
-    y: 78.22222
+    x: 1553.4445
+    y: 24
     width: 739.8888
     height: 787.7778
   m_SerializedDataModeController:
@@ -594,7 +594,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 78.22222
+    y: 24
     width: 375.44446
     height: 525.55554
   m_SerializedDataModeController:
@@ -659,8 +659,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Scene\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 376.44446
-    y: 78.22222
+    x: 377.44446
+    y: 24
     width: 1174
     height: 525.55554
   m_SerializedDataModeController:
@@ -1301,7 +1301,7 @@ MonoBehaviour:
       height: 960
     m_MinimalGUI: 1
   m_defaultScale: 0.5255787
-  m_LastWindowPixelSize: {x: 2641.5, y: 1182.5}
+  m_LastWindowPixelSize: {x: 1174, y: 525.55554}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000000000000
