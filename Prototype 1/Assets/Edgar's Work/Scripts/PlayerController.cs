@@ -6,21 +6,23 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 5f;
     public float jumpForce = 10f;
-    public float doubleJumpForce = 12f; // Stronger double jump
-    public float airControlSpeed = 3f;   // How fast you can adjust in air
+    public float doubleJumpForce = 12f;
+    public float airControlSpeed = 3f;
 
     [Header("Ground Check")]
     public Transform groundCheck;
-    public float groundCheckRadius = 0.2f;
+    public Vector2 groundCheckSize = new Vector2(0.5f, 0.1f); // width and height adjustable in inspector
     public LayerMask groundLayer;
 
     private Rigidbody2D rb;
     private bool isGrounded;
     private bool hasUsedDoubleJump = false;
+    private Vector3 originalScale;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        originalScale = transform.localScale;
     }
 
     void Update()
@@ -28,26 +30,34 @@ public class PlayerController : MonoBehaviour
         CheckGround();
         HandleMovement();
         HandleJump();
+        HandleFacing();
     }
 
     void HandleMovement()
     {
         float moveInput = Input.GetAxisRaw("Horizontal");
 
+        // Prevent moving into a wall while in midair
+        if (!isGrounded)
+        {
+            RaycastHit2D hit = Physics2D.BoxCast(transform.position, GetComponent<Collider2D>().bounds.size, 0f, Vector2.right * moveInput, 0.1f, groundLayer);
+            if (hit.collider != null)
+                moveInput = 0;
+        }
+
         if (isGrounded)
-        {
-            // Full horizontal control on ground
             rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
-        }
         else
-        {
-            // Air control: smoothly adjust horizontal velocity
-            float targetVelocityX = moveInput * moveSpeed;
-            rb.linearVelocity = new Vector2(
-                Mathf.Lerp(rb.linearVelocity.x, targetVelocityX, airControlSpeed * Time.deltaTime),
-                rb.linearVelocity.y
-            );
-        }
+            rb.linearVelocity = new Vector2(Mathf.Lerp(rb.linearVelocity.x, moveInput * moveSpeed, airControlSpeed * Time.deltaTime), rb.linearVelocity.y);
+    }
+
+    void HandleFacing()
+    {
+        float moveInput = Input.GetAxisRaw("Horizontal");
+        if (moveInput > 0)
+            transform.localScale = new Vector3(Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
+        else if (moveInput < 0)
+            transform.localScale = new Vector3(-Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
     }
 
     void HandleJump()
@@ -69,7 +79,6 @@ public class PlayerController : MonoBehaviour
 
     void PerformJump(float force)
     {
-        // Only reset vertical velocity, keep horizontal momentum
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, force);
     }
@@ -78,31 +87,24 @@ public class PlayerController : MonoBehaviour
     {
         bool wasGrounded = isGrounded;
 
-        isGrounded = Physics2D.OverlapCircle(
-            groundCheck.position,
-            groundCheckRadius,
-            groundLayer
-        );
+        isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
 
         if (isGrounded && !wasGrounded)
-        {
             hasUsedDoubleJump = false;
-        }
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Death"))
-        {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
     }
 
     void OnDrawGizmosSelected()
     {
-        if (groundCheck == null) return;
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
+        }
     }
 }
