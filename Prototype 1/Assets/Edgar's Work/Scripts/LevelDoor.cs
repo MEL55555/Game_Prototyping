@@ -8,17 +8,30 @@ public class LevelDoor : MonoBehaviour
     public string nextSceneName;
 
     [Header("Door Teleport Trick")]
-    public bool doorMoves = false; // toggle in inspector
+    public bool doorMoves = false;
     public Transform[] teleportLocations;
     public float detectionRadius = 2f;
-    public int maxTeleports = 1; // how many times the door can move
+    public int maxTeleports = 1;
 
     private int teleportCount = 0;
     private Transform player;
 
+    Vector3 startPosition;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        startPosition = transform.position;
+    }
+
+    void OnEnable()
+    {
+        PlayerController.OnPlayerRespawn += ResetDoor;
+    }
+
+    void OnDisable()
+    {
+        PlayerController.OnPlayerRespawn -= ResetDoor;
     }
 
     void Update()
@@ -53,6 +66,12 @@ public class LevelDoor : MonoBehaviour
         {
             SceneManager.LoadScene(nextSceneName);
         }
+    }
+
+    void ResetDoor()
+    {
+        teleportCount = 0;
+        transform.position = startPosition;
     }
 
     void OnDrawGizmosSelected()

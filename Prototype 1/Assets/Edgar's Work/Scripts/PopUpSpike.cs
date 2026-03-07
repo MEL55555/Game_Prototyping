@@ -4,7 +4,7 @@ using System.Collections;
 public class PopUpSpike : MonoBehaviour
 {
     [Header("Spike Object")]
-    public GameObject spikeObject; // the spike that appears
+    public GameObject spikeObject;
 
     [Header("Trigger Requirement")]
     public bool requirePreviousTrigger = false;
@@ -12,35 +12,54 @@ public class PopUpSpike : MonoBehaviour
 
     [Header("Spawn Delay")]
     [Tooltip("Delay in seconds before the spike appears after triggering.")]
-    public float spawnDelay = 0f; // NEW: delay time
+    public float spawnDelay = 0f;
 
     private bool hasTriggered = false;
+    Coroutine spawnCoroutine;
+
+    void OnEnable()
+    {
+        PlayerController.OnPlayerRespawn += ResetTrap;
+    }
+
+    void OnDisable()
+    {
+        PlayerController.OnPlayerRespawn -= ResetTrap;
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (hasTriggered) return;
         if (!other.CompareTag("Player")) return;
 
-        // If a previous trigger is required but hasn't activated yet
         if (requirePreviousTrigger)
         {
             if (requiredTrigger == null) return;
             if (!requiredTrigger.activated) return;
         }
 
-        StartCoroutine(ActivateSpikeWithDelay());
+        spawnCoroutine = StartCoroutine(ActivateSpikeWithDelay());
     }
 
-    private IEnumerator ActivateSpikeWithDelay()
+    IEnumerator ActivateSpikeWithDelay()
     {
         hasTriggered = true;
 
-        // Wait for the specified delay
         if (spawnDelay > 0f)
             yield return new WaitForSeconds(spawnDelay);
 
-        // Activate the spike
         if (spikeObject != null)
             spikeObject.SetActive(true);
+    }
+
+    void ResetTrap()
+    {
+        if (spawnCoroutine != null)
+            StopCoroutine(spawnCoroutine);
+
+        hasTriggered = false;
+
+        if (spikeObject != null)
+            spikeObject.SetActive(false);
     }
 }
