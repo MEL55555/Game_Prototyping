@@ -1352,12 +1352,20 @@ PrefabInstance:
       objectReference: {fileID: 519420033}
     - target: {fileID: 9185072529337239498, guid: dcd955f488d844341b96dd97298caa63, type: 3}
       propertyPath: shakeDelay
-      value: 0.05
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9185072529337239498, guid: dcd955f488d844341b96dd97298caa63, type: 3}
       propertyPath: respawnPoint
       value: 
       objectReference: {fileID: 323162535}
+    - target: {fileID: 9185072529337239498, guid: dcd955f488d844341b96dd97298caa63, type: 3}
+      propertyPath: maxShakeMagnitude
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9185072529337239498, guid: dcd955f488d844341b96dd97298caa63, type: 3}
+      propertyPath: shakeDurationMultiplier
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
