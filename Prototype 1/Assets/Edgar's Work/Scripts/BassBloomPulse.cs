@@ -5,8 +5,8 @@ using UnityEngine.Rendering.Universal;
 public class BassPostProcessPulse : MonoBehaviour
 {
     [Header("Audio & Effects")]
-    public AudioSource music;   // The music audio source
-    public Volume volume;       // Post-processing volume reference
+    public AudioSource music;
+    public Volume volume;
 
     [Header("Bloom Settings")]
     public bool bloomEnabled = true;
@@ -40,25 +40,37 @@ public class BassPostProcessPulse : MonoBehaviour
     public int highMidCount = 5;
 
     [Header("Global Settings")]
-    public float audioMultiplier = 0.5f;  // Scales the FFT spectrum
-    public float smoothSpeed = 8f;        // Smooth factor for pulsing
+    public float audioMultiplier = 0.5f;
+    public float smoothSpeed = 8f;
 
-    private float[] spectrum = new float[64];  // Audio spectrum buffer
-    private float pulse;                       // Smoothed pulse value
+    private float[] spectrum = new float[64];
+    private float pulse;
 
-    // Post-processing references
     private Bloom bloom;
     private ChromaticAberration chromatic;
     private LensDistortion lensDistortion;
 
-    // Default intensities to reset effects when no music is playing
     private float bloomDefault;
     private float chromaticDefault;
     private float lensDefault;
 
-    void Start()
+    [HideInInspector]
+    public bool freezeEffects = false; // freeze current effect values
+    public bool vignetteEnabled = true;
+    public bool filmGrainEnabled = true;
+
+    // --- Public read-only property for external scripts ---
+    public float LensIntensity
     {
-        // Get post-processing effects from volume
+        get
+        {
+            return lensDistortion != null ? lensDistortion.intensity.value : 0f;
+        }
+    }
+
+    void Awake()
+    {
+        // Initialize effects early so other scripts can access them
         if (volume != null)
         {
             volume.profile.TryGet(out bloom);
@@ -66,7 +78,6 @@ public class BassPostProcessPulse : MonoBehaviour
             volume.profile.TryGet(out lensDistortion);
         }
 
-        // Store default values
         if (bloom != null) bloomDefault = bloom.intensity.value;
         if (chromatic != null) chromaticDefault = chromatic.intensity.value;
         if (lensDistortion != null) lensDefault = lensDistortion.intensity.value;
@@ -74,39 +85,31 @@ public class BassPostProcessPulse : MonoBehaviour
 
     void Update()
     {
+        if (freezeEffects) return;
+
         if (music == null || !music.isPlaying)
         {
-            ResetEffects(); // Reset if no music
+            ResetEffects();
             return;
         }
 
-        // --- Get audio spectrum ---
         music.GetSpectrumData(spectrum, 0, FFTWindow.Blackman);
 
-        // --- Calculate frequency band pulses ---
         float deepBass = SumRange(spectrum, 0, deepBassCount);
         float midBass = SumRange(spectrum, deepBassCount, midBassCount);
         float highMid = SumRange(spectrum, deepBassCount + midBassCount, highMidCount);
 
-        // Weighted combined pulse
         float combinedPulse = (deepBass * 1f + midBass * 0.7f + highMid * 0.5f) * audioMultiplier;
-
-        // Smooth pulse to avoid jitter
         pulse = Mathf.Lerp(pulse, combinedPulse, Time.deltaTime * smoothSpeed);
 
-        // Apply effects
         ApplyEffect(bloom, bloomEnabled, pulse, bloomThreshold, bloomExponent, bloomMultiplier, val => bloom.intensity.value = val, bloomDefault);
         ApplyChromatic(chromatic, chromaticEnabled, pulse, chromaticThreshold, chromaticExponent, chromaticMultiplier, chromaticDefault);
         ApplyEffect(lensDistortion, lensDistortionEnabled, pulse, lensThreshold, lensExponent, lensDistortionMultiplier, val => lensDistortion.intensity.value = val, lensDefault);
 
-        // Camera shake based on audio
         if (targetCamera != null && shakeEnabled)
-        {
             ApplyCameraShake(pulse);
-        }
     }
 
-    // --- Helper: Sum a range of the spectrum ---
     private float SumRange(float[] data, int start, int count)
     {
         float sum = 0f;
@@ -115,7 +118,6 @@ public class BassPostProcessPulse : MonoBehaviour
         return sum;
     }
 
-    // --- Apply generic effect (Bloom or Lens) ---
     private void ApplyEffect<T>(T effect, bool enabled, float pulse, float threshold, float exponent, float multiplier, System.Action<float> applyValue, float defaultValue)
     {
         if (effect != null && enabled)
@@ -126,19 +128,17 @@ public class BassPostProcessPulse : MonoBehaviour
         }
     }
 
-    // --- Special handler for Chromatic Aberration ---
     private void ApplyChromatic(ChromaticAberration effect, bool enabled, float pulse, float threshold, float exponent, float multiplier, float defaultValue)
     {
         if (effect != null && enabled)
         {
             float value = Mathf.Max(pulse - threshold, 0f);
             value = Mathf.Pow(value, exponent);
-            float finalValue = Mathf.Max(value * multiplier, 0.01f); // minimal movement
+            float finalValue = Mathf.Max(value * multiplier, 0.01f);
             effect.intensity.value = defaultValue + Mathf.PingPong(finalValue, 1f);
         }
     }
 
-    // --- Camera shake logic ---
     private void ApplyCameraShake(float pulse)
     {
         float shakePulse = Mathf.Max(pulse - shakeThreshold, 0f);
@@ -154,7 +154,6 @@ public class BassPostProcessPulse : MonoBehaviour
         targetCamera.transform.localPosition += shakeOffset;
     }
 
-    // --- Reset all effects to their defaults ---
     void ResetEffects()
     {
         if (bloom != null) bloom.intensity.value = bloomDefault;

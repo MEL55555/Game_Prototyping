@@ -53,7 +53,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 3
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: bd588c5c6df5a0e4fb145efdef29e8b2, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -149,10 +149,7 @@ MonoBehaviour:
   deathEffectPrefab: {fileID: 1966698643855526933, guid: 9a5db9bfdf0152046a993ac71060db0e, type: 3}
   respawnDelay: 0.9
   trail: {fileID: 6279595254385000296}
-  ghostPrefab: {fileID: 0}
-  ghostSpawnRate: 0.05
-  ghostLifetime: 0.3
-  ghostMinMovement: 0.1
+  tauntSystem: {fileID: 0}
 --- !u!212 &5637178468339439695
 SpriteRenderer:
   m_ObjectHideFlags: 0

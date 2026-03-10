@@ -5,6 +5,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour
 {
     public static Action OnPlayerRespawn;
+    public event Action OnPlayerDeath; // Event for explosion
 
     [Header("Movement")]
     public float moveSpeed = 5f;
@@ -50,6 +51,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Trail Settings")]
     public TrailRenderer trail;
+    
+    [Header("Death Taunts")]
+    public DeathTauntSystem tauntSystem;
 
     Rigidbody2D rb;
     SpriteRenderer spriteRenderer;
@@ -110,7 +114,6 @@ public class PlayerController : MonoBehaviour
                 rb.linearVelocity.y
             );
 
-        // Emit trail only when moving
         if (trail != null)
             trail.emitting = Mathf.Abs(rb.linearVelocity.x) > 0.1f || Mathf.Abs(rb.linearVelocity.y) > 0.1f;
     }
@@ -204,15 +207,19 @@ public class PlayerController : MonoBehaviour
         isDead = true;
         deathCount++;
 
+        // Trigger death event for explosion
+        OnPlayerDeath?.Invoke();
+
+        // Spawn particle effect
         if (deathEffectPrefab != null)
             Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
 
+        // Camera shake
         if (camFollow != null)
             camFollow.ShakeCamera(0.25f, 0.5f);
 
         rb.linearVelocity = Vector2.zero;
 
-        // Hide player sprite and stop trail
         if (spriteRenderer != null) spriteRenderer.enabled = false;
         if (trail != null) trail.emitting = false;
 
@@ -225,6 +232,7 @@ public class PlayerController : MonoBehaviour
         if (trail != null) trail.Clear();
         if (spriteRenderer != null) spriteRenderer.enabled = true;
 
+        // Trigger taunt voice + typing
         OnPlayerRespawn?.Invoke();
         isDead = false;
     }
