@@ -3,19 +3,18 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
-public class PauseMenuWithSettings : MonoBehaviour
+public class MainMenuWithSettings : MonoBehaviour
 {
     [Header("UI")]
-    public GameObject pauseMenuUI;
+    public GameObject mainMenuUI;
     public GameObject settingsMenuUI;
 
     [Header("Buttons")]
-    public Button firstPauseButton;
+    public Button firstMainButton;
     public Button firstSettingsButton;
 
     [Header("Audio")]
-    public AudioSource gameMusic;
-    public AudioSource pauseMusic;
+    public AudioSource menuMusic;
     public Slider musicVolumeSlider;
 
     [Header("Post Processing")]
@@ -28,28 +27,41 @@ public class PauseMenuWithSettings : MonoBehaviour
     public Toggle vignetteToggle;
     public Toggle filmGrainToggle;
 
-    [Header("Disable When Paused")]
-    public MonoBehaviour[] scriptsToDisable;
-
     [Header("Custom Cursor")]
     public CustomCursor customCursor;
 
-    bool isPaused = false;
-
     void Start()
     {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        Time.timeScale = 1f;
 
-        // ✅ LOAD + APPLY SETTINGS
+        // ✅ CURSOR
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
+
+        if (customCursor != null)
+        {
+            customCursor.gameObject.SetActive(true);
+            customCursor.ShowCursor();
+        }
+
+        // ✅ MENU STATE
+        if (mainMenuUI != null)
+            mainMenuUI.SetActive(true);
+
+        if (settingsMenuUI != null)
+            settingsMenuUI.SetActive(false);
+
+        // ✅ LOAD SETTINGS FIRST
         LoadSettings();
+
+        // ✅ APPLY SETTINGS TO SYSTEMS
         ApplySettings();
 
         // ✅ LISTENERS (SAVE ON CHANGE)
-        if (musicVolumeSlider != null && gameMusic != null)
+        if (musicVolumeSlider != null && menuMusic != null)
             musicVolumeSlider.onValueChanged.AddListener(v =>
             {
-                gameMusic.volume = v;
+                menuMusic.volume = v;
                 SaveSettings();
             });
 
@@ -87,16 +99,12 @@ public class PauseMenuWithSettings : MonoBehaviour
                 if (bassVisualizer != null) bassVisualizer.filmGrainEnabled = v;
                 SaveSettings();
             });
-    }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
+        // ✅ SELECT BUTTON
+        if (EventSystem.current != null && firstMainButton != null)
         {
-            if (isPaused)
-                Resume();
-            else
-                Pause();
+            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(firstMainButton.gameObject);
         }
     }
 
@@ -149,8 +157,8 @@ public class PauseMenuWithSettings : MonoBehaviour
     // -------- APPLY --------
     void ApplySettings()
     {
-        if (gameMusic != null && musicVolumeSlider != null)
-            gameMusic.volume = musicVolumeSlider.value;
+        if (menuMusic != null && musicVolumeSlider != null)
+            menuMusic.volume = musicVolumeSlider.value;
 
         if (bassVisualizer != null)
         {
@@ -171,66 +179,20 @@ public class PauseMenuWithSettings : MonoBehaviour
         }
     }
 
-    // -------- GAME FLOW --------
+    // -------- MENU --------
 
-    public void Resume()
+    public void PlayGame()
     {
-        pauseMenuUI.SetActive(false);
-        settingsMenuUI.SetActive(false);
-
-        Time.timeScale = 1f;
-        isPaused = false;
-
-        foreach (var script in scriptsToDisable)
-            script.enabled = true;
-
-        if (gameMusic != null) gameMusic.UnPause();
-        if (pauseMusic != null) pauseMusic.Stop();
-
-        if (bassVisualizer != null)
-            bassVisualizer.freezeEffects = false;
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
-        if (customCursor != null)
-            customCursor.HideCursor();
-    }
-
-    public void Pause()
-    {
-        pauseMenuUI.SetActive(true);
-        settingsMenuUI.SetActive(false);
-
-        Time.timeScale = 0f;
-        isPaused = true;
-
-        foreach (var script in scriptsToDisable)
-            script.enabled = false;
-
-        if (gameMusic != null) gameMusic.Pause();
-        if (pauseMusic != null) pauseMusic.Play();
-
-        if (bassVisualizer != null)
-            bassVisualizer.freezeEffects = true;
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = false;
-
-        if (customCursor != null)
-            customCursor.ShowCursor();
-
-        if (EventSystem.current != null && firstPauseButton != null)
-        {
-            EventSystem.current.SetSelectedGameObject(null);
-            EventSystem.current.SetSelectedGameObject(firstPauseButton.gameObject);
-        }
+        SceneManager.LoadScene("Level1");
     }
 
     public void OpenSettings()
     {
-        pauseMenuUI.SetActive(false);
-        settingsMenuUI.SetActive(true);
+        if (mainMenuUI != null)
+            mainMenuUI.SetActive(false);
+
+        if (settingsMenuUI != null)
+            settingsMenuUI.SetActive(true);
 
         if (EventSystem.current != null && firstSettingsButton != null)
         {
@@ -241,20 +203,17 @@ public class PauseMenuWithSettings : MonoBehaviour
 
     public void CloseSettings()
     {
-        settingsMenuUI.SetActive(false);
-        pauseMenuUI.SetActive(true);
+        if (settingsMenuUI != null)
+            settingsMenuUI.SetActive(false);
 
-        if (EventSystem.current != null && firstPauseButton != null)
+        if (mainMenuUI != null)
+            mainMenuUI.SetActive(true);
+
+        if (EventSystem.current != null && firstMainButton != null)
         {
             EventSystem.current.SetSelectedGameObject(null);
-            EventSystem.current.SetSelectedGameObject(firstPauseButton.gameObject);
+            EventSystem.current.SetSelectedGameObject(firstMainButton.gameObject);
         }
-    }
-
-    public void LoadMainMenu()
-    {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenu");
     }
 
     public void QuitGame()
