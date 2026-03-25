@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CustomCursor : MonoBehaviour
 {
@@ -18,11 +19,14 @@ public class CustomCursor : MonoBehaviour
     {
         if (cursorImage == null || canvas == null || uiCamera == null) return;
 
+        
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+
         Vector2 pos;
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             canvas.transform as RectTransform,
-            Input.mousePosition,
+            mousePos,
             uiCamera,
             out pos
         );

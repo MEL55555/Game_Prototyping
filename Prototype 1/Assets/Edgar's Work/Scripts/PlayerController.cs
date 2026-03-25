@@ -1,11 +1,12 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
     public static Action OnPlayerRespawn;
-    public event Action OnPlayerDeath; // Event for explosion
+    public event Action OnPlayerDeath;
 
     [Header("Movement")]
     public float moveSpeed = 5f;
@@ -68,6 +69,46 @@ public class PlayerController : MonoBehaviour
     float previousYVelocity;
     float pendingShakeMagnitude = 0f;
 
+    // INPUT SYSTEM
+    InputAction moveAction;
+    InputAction jumpAction;
+
+    float moveInput;
+    bool jumpPressed;
+
+    void OnEnable()
+    {
+        // Movement (Keyboard + Controller Stick)
+        moveAction = new InputAction(type: InputActionType.Value);
+
+        // Keyboard (A/D)
+        moveAction.AddCompositeBinding("1DAxis")
+            .With("Negative", "<Keyboard>/a")
+            .With("Positive", "<Keyboard>/d");
+
+        // Controller (Left Stick X)
+        moveAction.AddBinding("<Gamepad>/leftStick/x");
+
+        moveAction.performed += ctx => moveInput = ctx.ReadValue<float>();
+        moveAction.canceled += ctx => moveInput = 0f;
+
+        // Jump (Space + A button)
+        jumpAction = new InputAction(type: InputActionType.Button);
+        jumpAction.AddBinding("<Keyboard>/space");
+        jumpAction.AddBinding("<Gamepad>/buttonSouth"); // A on Xbox / Cross on PlayStation
+
+        jumpAction.performed += ctx => jumpPressed = true;
+
+        moveAction.Enable();
+        jumpAction.Enable();
+    }
+
+    void OnDisable()
+    {
+        moveAction.Disable();
+        jumpAction.Disable();
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -104,8 +145,6 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        float moveInput = Input.GetAxisRaw("Horizontal");
-
         if (isGrounded)
             rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
         else
@@ -120,7 +159,7 @@ public class PlayerController : MonoBehaviour
 
     void HandleJump()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (jumpPressed)
         {
             if (isGrounded)
             {
@@ -137,6 +176,8 @@ public class PlayerController : MonoBehaviour
                 targetScale = new Vector3(originalScale.x * 0.75f, originalScale.y * 1.3f, 1);
             }
         }
+
+        jumpPressed = false;
     }
 
     void PerformJump(float force)
@@ -207,14 +248,11 @@ public class PlayerController : MonoBehaviour
         isDead = true;
         deathCount++;
 
-        // Trigger death event for explosion
         OnPlayerDeath?.Invoke();
 
-        // Spawn particle effect
         if (deathEffectPrefab != null)
             Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
 
-        // Camera shake
         if (camFollow != null)
             camFollow.ShakeCamera(0.25f, 0.5f);
 
@@ -232,7 +270,6 @@ public class PlayerController : MonoBehaviour
         if (trail != null) trail.Clear();
         if (spriteRenderer != null) spriteRenderer.enabled = true;
 
-        // Trigger taunt voice + typing
         OnPlayerRespawn?.Invoke();
         isDead = false;
     }

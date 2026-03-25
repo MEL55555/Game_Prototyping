@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 2293.3333
     height: 869.7778
   m_ShowMode: 4
-  m_Title: Project
+  m_Title: Game
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 100
+  controlID: 224
   draggingID: 0
 --- !u!114 &3
 MonoBehaviour:
@@ -224,7 +224,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 44
+  controlID: 225
   draggingID: 0
 --- !u!114 &10
 MonoBehaviour:
@@ -250,7 +250,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 45
+  controlID: 226
   draggingID: 0
 --- !u!114 &11
 MonoBehaviour:
@@ -416,7 +416,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scenes
+    - Assets/Edgar's Work
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -426,7 +426,7 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scenes
+  - Assets/Edgar's Work
   m_LastFoldersGridSize: 64
   m_LastProjectPath: C:\Users\Edgar\Documents\University\C-Scripting-for-games\New
     folder\Game_Prototyping\Prototype 1
@@ -434,9 +434,9 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 4.666687}
-    m_SelectedIDs: fcb80000
-    m_LastClickedID: 47356
-    m_ExpandedIDs: 0000000098b80000fab8000000ca9a3b
+    m_SelectedIDs: eab90000
+    m_LastClickedID: 47594
+    m_ExpandedIDs: 000000006ab90000eab9000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -465,7 +465,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000098b80000
+    m_ExpandedIDs: 000000006ab90000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -611,9 +611,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: e0bd0000
+      m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: a4eaffff02fbffff
+      m_ExpandedIDs: 8497feff549afeff669dfeff80b1feff42b2feff58b2feff8ab2feff54c5feff52c9feff68ccfeff8ecffeff12d3feffe0d5fefff0d8feffbedbfefffedefeff0ae2feffaaeefeff16f8feff16fefeffcc00ffff625affff9c5affffbe5affffcc5affff6866ffffdad4ffffded4fffff6d4fffffad4ffff12d5ffff16d5ffff2ed5ffff32d5ffff4ad5ffff4ed5ffff5ad5ffff72d5ffff7ad5fffff0d5fffffad5fffffafaffff00fbffff02fbffff80ce0000b8ff0000beff00007e1f0100
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1119,9 +1119,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -2.5954742, y: 5.0163965, z: 0.6144259}
+    m_Target: {x: 2718.6526, y: 1195.1285, z: -15.007004}
     speed: 2
-    m_Value: {x: -2.5954742, y: 5.0163965, z: 0.6144259}
+    m_Value: {x: 2718.6526, y: 1195.1285, z: -15.007004}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1171,9 +1171,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 9.2637415
+    m_Target: 1443.9016
     speed: 2
-    m_Value: 9.2637415
+    m_Value: 1443.9016
   m_Ortho:
     m_Target: 1
     speed: 2

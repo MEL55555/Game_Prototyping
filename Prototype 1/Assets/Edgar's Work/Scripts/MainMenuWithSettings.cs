@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class MainMenuWithSettings : MonoBehaviour
 {
@@ -30,11 +31,35 @@ public class MainMenuWithSettings : MonoBehaviour
     [Header("Custom Cursor")]
     public CustomCursor customCursor;
 
+    // INPUT SYSTEM
+    InputAction backAction;
+
+    void OnEnable()
+    {
+        // BACK (B / Circle)
+        backAction = new InputAction(type: InputActionType.Button);
+        backAction.AddBinding("<Gamepad>/buttonEast");
+
+        backAction.performed += ctx =>
+        {
+            if (settingsMenuUI != null && settingsMenuUI.activeSelf)
+            {
+                CloseSettings();
+            }
+        };
+
+        backAction.Enable();
+    }
+
+    void OnDisable()
+    {
+        backAction.Disable();
+    }
+
     void Start()
     {
         Time.timeScale = 1f;
 
-        // ✅ CURSOR
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
 
@@ -44,20 +69,15 @@ public class MainMenuWithSettings : MonoBehaviour
             customCursor.ShowCursor();
         }
 
-        // ✅ MENU STATE
         if (mainMenuUI != null)
             mainMenuUI.SetActive(true);
 
         if (settingsMenuUI != null)
             settingsMenuUI.SetActive(false);
 
-        // ✅ LOAD SETTINGS FIRST
         LoadSettings();
-
-        // ✅ APPLY SETTINGS TO SYSTEMS
         ApplySettings();
 
-        // ✅ LISTENERS (SAVE ON CHANGE)
         if (musicVolumeSlider != null && menuMusic != null)
             musicVolumeSlider.onValueChanged.AddListener(v =>
             {
@@ -100,7 +120,6 @@ public class MainMenuWithSettings : MonoBehaviour
                 SaveSettings();
             });
 
-        // ✅ SELECT BUTTON
         if (EventSystem.current != null && firstMainButton != null)
         {
             EventSystem.current.SetSelectedGameObject(null);

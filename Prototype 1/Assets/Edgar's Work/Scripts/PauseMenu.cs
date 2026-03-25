@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class PauseMenuWithSettings : MonoBehaviour
 {
@@ -36,16 +37,56 @@ public class PauseMenuWithSettings : MonoBehaviour
 
     bool isPaused = false;
 
+    // INPUT SYSTEM
+    InputAction pauseAction;
+    InputAction backAction;
+
+    void OnEnable()
+    {
+        // PAUSE (Esc, P, Start)
+        pauseAction = new InputAction(type: InputActionType.Button);
+        pauseAction.AddBinding("<Keyboard>/escape");
+        pauseAction.AddBinding("<Keyboard>/p");
+        pauseAction.AddBinding("<Gamepad>/start");
+
+        pauseAction.performed += ctx =>
+        {
+            if (isPaused)
+                Resume();
+            else
+                Pause();
+        };
+
+        // BACK (B / Circle)
+        backAction = new InputAction(type: InputActionType.Button);
+        backAction.AddBinding("<Gamepad>/buttonEast");
+
+        backAction.performed += ctx =>
+        {
+            if (settingsMenuUI.activeSelf)
+            {
+                CloseSettings();
+            }
+        };
+
+        pauseAction.Enable();
+        backAction.Enable();
+    }
+
+    void OnDisable()
+    {
+        pauseAction.Disable();
+        backAction.Disable();
+    }
+
     void Start()
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        // ✅ LOAD + APPLY SETTINGS
         LoadSettings();
         ApplySettings();
 
-        // ✅ LISTENERS (SAVE ON CHANGE)
         if (musicVolumeSlider != null && gameMusic != null)
             musicVolumeSlider.onValueChanged.AddListener(v =>
             {
@@ -87,17 +128,6 @@ public class PauseMenuWithSettings : MonoBehaviour
                 if (bassVisualizer != null) bassVisualizer.filmGrainEnabled = v;
                 SaveSettings();
             });
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
-        {
-            if (isPaused)
-                Resume();
-            else
-                Pause();
-        }
     }
 
     // -------- SAVE --------
