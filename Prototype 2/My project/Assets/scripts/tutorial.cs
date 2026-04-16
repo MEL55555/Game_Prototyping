@@ -9,9 +9,9 @@ public class StartChunkBuilder : MonoBehaviour
     public float chunkDepth = 40f; 
     
     [Header("Tutorial Slope Settings")]
-    public float startLowDepth = -14f; // How deep the ball starts
+    public float startLowDepth = -14f; 
     [Range(0f, 0.5f)]
-    public float flatStartPercent = 0.2f; // How long it stays low before rising
+    public float flatStartPercent = 0.2f; 
 
     [Header("Resolution")]
     [Range(20, 100)]
@@ -20,6 +20,7 @@ public class StartChunkBuilder : MonoBehaviour
     [ContextMenu("Build Low-To-High Start")]
     public void BuildStart()
     {
+        // gets the tool to draw the ground shape
         SpriteShapeController shape = GetComponent<SpriteShapeController>();
         Spline spline = shape.spline;
         spline.Clear();
@@ -30,28 +31,28 @@ public class StartChunkBuilder : MonoBehaviour
             float xPos = t * chunkWidth;
             float yPos;
 
+            // decides if the ground stays flat or starts rising
             if (t < flatStartPercent)
             {
-                // Part 1: Stay at the low depth
+                // keeps the ground low at the very beginning
                 yPos = startLowDepth;
             }
             else
             {
-                // Part 2: Rise back to 0
-                // Remap 't' so it starts at 0 when we leave the flat part
+                // math to make a smooth curve back up to the top
                 float riseT = (t - flatStartPercent) / (1f - flatStartPercent);
                 
-                // Using a Cosine lerp (Smooth Step) for a silky ramp
-                // This starts at startLowDepth and ends exactly at 0
+                // smooth step math so the ramp feels silky
                 float smoothRise = (1f - Mathf.Cos(riseT * Mathf.PI)) / 2f;
-                yPos = Mathf.Lerp(startLowDepth, 0, smoothRise);
+              yPos = Mathf.Lerp(startLowDepth, 0, smoothRise);
             }
 
-            spline.InsertPointAt(i, new Vector3(xPos, yPos, 0));
+            // adds the point to the spline
+          spline.InsertPointAt(i, new Vector3(xPos, yPos, 0));
             spline.SetTangentMode(i, ShapeTangentMode.Continuous);
         }
 
-        // Close the bottom shape
+        // adds the bottom points to fill the shape in
         int last = smoothness + 1;
         spline.InsertPointAt(last, new Vector3(chunkWidth, -chunkDepth, 0));
         spline.SetTangentMode(last, ShapeTangentMode.Linear);
@@ -59,7 +60,7 @@ public class StartChunkBuilder : MonoBehaviour
         spline.InsertPointAt(last + 1, new Vector3(0, -chunkDepth, 0));
         spline.SetTangentMode(last + 1, ShapeTangentMode.Linear);
         
+        // updates the sprite to show the new ground
         shape.RefreshSpriteShape();
-        Debug.Log($"Low-to-High Tutorial Built. Starting Depth: {startLowDepth}");
     }
 }

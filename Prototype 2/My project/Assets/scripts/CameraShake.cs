@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections; // THIS WAS MISSING
+using System.Collections; 
 
 public class CameraShake : MonoBehaviour
 {
@@ -10,6 +10,7 @@ public class CameraShake : MonoBehaviour
 
     public void Shake(float duration, float intensity)
     {
+        // save where the camera was before shaking
         _originalPos = transform.localPosition;
         StopAllCoroutines();
         StartCoroutine(ProcessShake(duration, intensity));
@@ -20,6 +21,7 @@ public class CameraShake : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < duration)
         {
+            // pick a random spot nearby
             float x = Random.Range(-1f, 1f) * intensity;
             float y = Random.Range(-1f, 1f) * intensity;
             
@@ -28,6 +30,7 @@ public class CameraShake : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
+        // put the camera back exactly where it started
         transform.localPosition = _originalPos;
     }
 }
