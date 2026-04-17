@@ -7214,7 +7214,7 @@ MonoBehaviour:
   endButtonsContainer: {fileID: 1269428288}
   endVideoPlayer: {fileID: 212311931}
   videoUIContainer: {fileID: 1792091298}
-  targetScore: 50000
+  targetScore: 10000
   continueBoostForce: 50
   slowMoDuration: 3
 --- !u!4 &1390982654
@@ -8037,17 +8037,17 @@ MonoBehaviour:
   fireTrail: {fileID: 659601801}
   fireStartSpeed: 60
   fireIntensityMultiplier: 6
-  floatGravity: 1.9
-  baseDiveGravity: 5
+  floatGravity: 1.7
+  baseDiveGravity: 8
   maxDiveGravity: 50
-  chargeSpeed: 12
+  chargeSpeed: 15
   slidePushForce: 40
   passiveSlideBoost: 2
   diveAcceleration: 20
   initialPush: 55
   maxSpeed: 60
-  deathSpeedThreshold: 18
-  pointsToUpgrade: 5000
+  deathSpeedThreshold: 10
+  pointsToUpgrade: 2500
   speedIncreaseAmount: 5
   absoluteMaxSpeed: 120
   pushForceIncrease: 5
