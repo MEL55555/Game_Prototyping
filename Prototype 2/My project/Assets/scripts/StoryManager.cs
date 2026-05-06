@@ -42,18 +42,25 @@ public class StoryManager : MonoBehaviour
     private bool _storyFinished = false;
 
     private string[] openingMonologue = {
-        "CRITICAL ERROR: Orbital tether severed.",
-        "The Neon Spire has fallen silent...",
-        "Kinetic batteries at 4%. Systems failing.",
-        "Input required: Pilot the core to the Forge.",
-        "Burn bright... before the signal dies."
+        "…signal restored…",
+        "Pilot, if you can hear this, you survived the crash.",
+        "Your vessel went down beyond the mapped dunes.",
+        "Navigation is gone. The storm is closing in.",
+        "All we can track is your core momentum… keep moving.",
+        "There may be a way out past the outer ridge.",
+        "Do not stop. The dunes are not stable.",
+        "We will guide you as long as the signal holds."
     };
 
     private string[] closingMonologue = {
-        "The Forge ignites once more.",
-        "The kinetic light is stable... the Great Machine breathes.",
-        "Your mission is complete, Pilot.",
-        "Will you return to the Spire, or wander the dunes forever?"
+        "…you made it further than expected…",
+        "the signal is degrading… we are losing you…",
+        "those readings… that is not just terrain…",
+        "something is moving beneath the surface…",
+        "you need to turn back… do you hear me…",
+        "…no… keep going… it is the only way out…",
+        "we cannot see the end anymore… only you can…",
+        "…signal lost…"
     };
 
     void Awake() 
@@ -244,6 +251,6 @@ public class StoryManager : MonoBehaviour
         // updates the text showing the max distance
         float highscore = PlayerPrefs.GetFloat("HighScore", 0);
         if (highScoreText != null) 
-            highScoreText.text = "MAX DEPTH REACHED\n" + Mathf.FloorToInt(highscore) + " UNITS";
+            highScoreText.text = "LAST KNOWN POSITION\n" + Mathf.FloorToInt(highscore) + " UNITS";
     }
 }

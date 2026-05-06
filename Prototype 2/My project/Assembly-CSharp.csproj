@@ -46,6 +46,7 @@
     <Analyzer Include="C:\Program Files\Unity 6000.1.17f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\scripts\DynamicMusicManager.cs" />
     <Compile Include="Assets\scripts\ScoreManager.cs" />
     <Compile Include="Assets\scripts\ApplySettingsInGame.cs" />
     <Compile Include="Assets\scripts\tutorial.cs" />

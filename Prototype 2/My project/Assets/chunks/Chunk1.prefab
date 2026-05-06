@@ -51,9 +51,9 @@ MonoBehaviour:
   chunkDepth: 25
   baseNoiseScale: 0.02
   baseDuneHeight: 14
-  noiseIncreaseRate: 0.0005
+  noiseIncreaseRate: 0.0001
   maxNoiseScale: 0.07
-  heightIncreaseRate: 0.5
+  heightIncreaseRate: 0.1
   absoluteMaxHeight: 30
   seed: 0
   smoothness: 100
